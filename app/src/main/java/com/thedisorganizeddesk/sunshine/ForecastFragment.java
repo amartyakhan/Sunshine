@@ -90,15 +90,11 @@ public class ForecastFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Context context = getActivity();
-//                String text= parent.getItemAtPosition(position).toString();
-//                Intent intent = new Intent(context,DetailedWeatherActivity.class);
-//                intent.putExtra(EXTRA_MESSAGE, text);
-//                startActivity(intent);
                 Context context = getActivity();
-                Intent intentDetailedWeatherActivity = new Intent(context,DetailedWeatherActivity.class);
-                intentDetailedWeatherActivity.putExtra(EXTRA_MESSAGE, forecastJsonStr);
-                startActivity(intentDetailedWeatherActivity);
+                String text= adapter.getItem(position);
+                Intent intent = new Intent(context,DetailedWeatherActivity.class);
+                intent.putExtra(EXTRA_MESSAGE, text);
+                startActivity(intent);
             }
         });
 
