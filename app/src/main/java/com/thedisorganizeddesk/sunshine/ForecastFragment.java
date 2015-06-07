@@ -43,10 +43,12 @@ import java.util.zip.Inflater;
  */
 public class ForecastFragment extends Fragment {
     public final static String EXTRA_MESSAGE = "com.thedisorganizeddesk.sunshine.MESSAGE";
+    private ArrayAdapter<String> adapter;
+    // Will contain the raw JSON response as a string.
+    private String forecastJsonStr = null;
+
     public ForecastFragment() {
     }
-
-    private ArrayAdapter<String> adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -74,20 +76,13 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-//      String[] data = {
-//               "Mon 6/23?- Sunny - 31/17",
-//               "Tue 6/24 - Foggy - 21/8",
-//               "Wed 6/25 - Cloudy - 22/17",
-//               "Thurs 6/26 - Rainy - 18/11",
-//               "Fri 6/27 - Foggy - 21/10",
-//               "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-//               "Sun 6/29 - Sunny - 20/7"
-//       };
 
         //setting up the empty canvas
         List<String> weather_forecast = new ArrayList<String>(Arrays.asList(new String[]{}));
        adapter= new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weather_forecast);
+
+        //filling with first set of data
+        new FetchWeatherTask().execute("500019,in");
         View rootView;
         rootView = inflater.inflate(R.layout.fragment_main,container,false);
         ListView listView= (ListView) rootView.findViewById(R.id.listView_forecast);
@@ -95,11 +90,15 @@ public class ForecastFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Context context = getActivity();
+//                String text= parent.getItemAtPosition(position).toString();
+//                Intent intent = new Intent(context,DetailedWeatherActivity.class);
+//                intent.putExtra(EXTRA_MESSAGE, text);
+//                startActivity(intent);
                 Context context = getActivity();
-                String text= parent.getItemAtPosition(position).toString();
-                Intent intent = new Intent(context,DetailedWeatherActivity.class);
-                intent.putExtra(EXTRA_MESSAGE, text);
-                startActivity(intent);
+                Intent intentDetailedWeatherActivity = new Intent(context,DetailedWeatherActivity.class);
+                intentDetailedWeatherActivity.putExtra(EXTRA_MESSAGE, forecastJsonStr);
+                startActivity(intentDetailedWeatherActivity);
             }
         });
 
@@ -115,8 +114,7 @@ public class ForecastFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string.
-            String forecastJsonStr = null;
+
 
             if(param.length==0){
                 return null;
@@ -187,6 +185,7 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
+
             //Log.v(LOG_TAG,forecastJsonStr);
             String[] weatherData= new String[]{};
             try{
