@@ -2,8 +2,10 @@ package com.thedisorganizeddesk.sunshine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Time;
@@ -67,7 +69,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected (MenuItem item){
         int id = item.getItemId();
         if(id==R.id.action_refresh){
-            new FetchWeatherTask().execute("500019,in");
+            new FetchWeatherTask().execute();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -82,7 +84,8 @@ public class ForecastFragment extends Fragment {
        adapter= new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weather_forecast);
 
         //filling with first set of data
-        new FetchWeatherTask().execute("500019,in");
+        new FetchWeatherTask().execute();
+
         View rootView;
         rootView = inflater.inflate(R.layout.fragment_main,container,false);
         ListView listView= (ListView) rootView.findViewById(R.id.listView_forecast);
@@ -101,10 +104,10 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
-    private class FetchWeatherTask extends AsyncTask<String, Void, String[]>{
+    private class FetchWeatherTask extends AsyncTask<Void, Void, String[]>{
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
         @Override
-        protected String[] doInBackground(String... param){
+        protected String[] doInBackground(Void... param){
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -112,16 +115,13 @@ public class ForecastFragment extends Fragment {
 
 
 
-            if(param.length==0){
-                return null;
-            }
-
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
                 //there is only one parameter passed which is the Postcode
-                String postalCode= param[0];
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String postalCode= sharedPref.getString(getString(R.string.pref_location_key), "");
 
                 Uri.Builder builder= new Uri.Builder();
                 builder.scheme("http").authority("api.openweathermap.org").appendPath("data").appendPath("2.5").appendPath("forecast").appendPath("daily");
@@ -217,10 +217,17 @@ public class ForecastFragment extends Fragment {
          * Prepare the weather high/lows for presentation.
          */
         private String formatHighLows(double high, double low) {
+            //read sharedpreference anc update to celceius or ferenheit
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String temp_unit= sharedPref.getString(getString(R.string.pref_temperature_units_key), "");
+            if(temp_unit.compareTo(getString(R.string.temperature_units_default))!=0) {
+                high=(high)*9/5.0+32;
+                low=(low)*9/5.0+32;
+            }
             // For presentation, assume the user doesn't care about tenths of a degree.
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
-
+            //read sharedpreference anc update to celceius or ferenheit
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
         }

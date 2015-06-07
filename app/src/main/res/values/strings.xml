@@ -3,5 +3,30 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="action_view_map" translatable="false">View Map</string>
     <string name="title_activity_detailed_weather">Detailed Weather</string>
+
+    <!-- Label for the location preference [CHAR LIMIT=30] -->
+    <string name="pref_location_label">Location</string>
+
+    <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_location_key" translatable="false">location</string>
+
+    <!-- Default postal code for location preference [CHAR LIMIT=NONE] -->
+    <string name="pref_location_default" translatable="false">Hyderabad,IN</string>
+
+    <string name="pref_temperature_units_key" translatable="false">temperature_units</string>
+    <string name="pref_temperature_units_title" translatable="false">Temperature Units</string>
+    <string-array
+        name="temperature_units">
+        <item>Celcius </item>
+        <item>Ferenheit </item>
+    </string-array>
+    <string-array
+        name="temperature_unit_values">
+        <item>Celcius </item>
+        <item>Ferenheit </item>
+    </string-array>
+    <string name="temperature_units_default" translatable="false">Celcius </string>
+
 </resources>
