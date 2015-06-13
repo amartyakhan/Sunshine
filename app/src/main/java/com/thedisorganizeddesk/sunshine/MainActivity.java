@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,11 +16,12 @@ import java.net.URL;
 
 
 public class MainActivity extends ActionBarActivity {
-
+    private final String LOG_TAG =MainActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.v(LOG_TAG,"Activity Created");
     }
 
 
@@ -42,10 +45,38 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
             return true;
         }
-
-
-
-
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.v(LOG_TAG,"Activity Started");
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.v(LOG_TAG,"Activity Paused");
+    }
+
+    @Override
+    public void onStop(){
+        super.onPause();
+        Log.v(LOG_TAG,"Activity Stopped");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.v(LOG_TAG,"Activity Resumed");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.v(LOG_TAG,"Activity Destroyed");
+    }
+
+
 }
