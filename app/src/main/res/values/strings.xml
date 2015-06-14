@@ -17,6 +17,7 @@
 
     <string name="pref_temperature_units_key" translatable="false">temperature_units</string>
     <string name="pref_temperature_units_title" translatable="false">Temperature Units</string>
+    <string name="pref_units_key" translatable="false">Celcius</string>
     <string name="pref_units_metric" translatable="false">Celcius</string>
     <string name="pref_units_imperial" translatable="false">Ferenheit</string>
 

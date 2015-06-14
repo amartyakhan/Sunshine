@@ -17,11 +17,19 @@ import java.net.URL;
 
 public class MainActivity extends ActionBarActivity {
     private final String LOG_TAG =MainActivity.class.getSimpleName();
+    private final String FORECASTFRAGMENT_TAG = "FFTAG";
+    private String mLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.v(LOG_TAG,"Activity Created");
+        //Log.v(LOG_TAG, "Activity Created");
+        mLocation=Utility.getPreferredLocation(this);
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.container, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+//                    .commit();
+//        }
     }
 
 
@@ -51,31 +59,40 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onStart(){
         super.onStart();
-        Log.v(LOG_TAG,"Activity Started");
+        //Log.v(LOG_TAG,"Activity Started");
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        Log.v(LOG_TAG,"Activity Paused");
+        //Log.v(LOG_TAG,"Activity Paused");
     }
 
     @Override
     public void onStop(){
         super.onPause();
-        Log.v(LOG_TAG,"Activity Stopped");
+        //Log.v(LOG_TAG,"Activity Stopped");
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.v(LOG_TAG,"Activity Resumed");
+        //Log.v(LOG_TAG,"Activity Resumed");
+        String location = Utility.getPreferredLocation( this );
+        // update the location in our second pane using the fragment manager
+        if (location != null && !location.equals(mLocation)) {
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            if ( null != ff ) {
+                ff.onLocationChanged();
+            }
+            mLocation = location;
+        }
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
-        Log.v(LOG_TAG,"Activity Destroyed");
+        //Log.v(LOG_TAG,"Activity Destroyed");
     }
 
 

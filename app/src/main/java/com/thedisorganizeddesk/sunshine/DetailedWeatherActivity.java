@@ -26,13 +26,6 @@ public class DetailedWeatherActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detailed_weather, menu);
-
-        /** Getting the actionprovider associated with the menu item whose id is share */
-        MenuItem menuItem=menu.findItem(R.id.action_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -63,24 +56,6 @@ public class DetailedWeatherActivity extends ActionBarActivity {
             }
             return true;
         }
-        if (id == R.id.action_share) {
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            //getting the text to share
-            String shareString;
-            Intent parentIntent=getIntent();
-            shareString="Weather: " + getIntent().getStringExtra(EXTRA_MESSAGE) + "#SunshineApp";
-            shareIntent.putExtra(Intent.EXTRA_TEXT,shareString);
-            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            shareIntent.setType("text/plain");
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(shareIntent);
-            }
-
-            startActivity(shareIntent);
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }
