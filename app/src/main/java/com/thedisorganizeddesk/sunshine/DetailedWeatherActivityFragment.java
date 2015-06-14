@@ -114,7 +114,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.v(LOG_TAG, "Creating share menu");
+        Log.v(LOG_TAG, "In onCreateOptionsMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_detailed_weather_fragment, menu);
 
@@ -125,7 +125,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         // If onLoadFinished happens before this, we can go ahead and set the share intent now.
-        if (mForecast != null) {
+        if (mForecast != null && mShareActionProvider !=null) {
             Log.v(LOG_TAG, "Setting share Intent in onCreateOptionsMenu");
             mShareActionProvider.setShareIntent(createShareForecastIntent());
         }
@@ -134,6 +134,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.v(LOG_TAG, "In onOptionsItemSelected");
         if(item.getItemId()==R.id.action_share){
             startActivity(createShareForecastIntent());
         }
@@ -141,7 +142,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
     }
 
     private Intent createShareForecastIntent() {
-        Log.v(LOG_TAG, "Creating share intent");
+        Log.v(LOG_TAG, "In createShareForecastIntent");
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
