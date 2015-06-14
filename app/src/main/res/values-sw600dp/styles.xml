@@ -6,7 +6,7 @@
     </style>
 
     <style name="ChoiceStyle" >
-
+        <item name="android:choiceMode">singleChoice</item>
     </style>
 
 </resources>
