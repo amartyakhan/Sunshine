@@ -19,6 +19,16 @@ public class DetailedWeatherActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_weather);
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(DetailedWeatherActivityFragment.DETAIL_URI, getIntent().getData());
+
+            DetailedWeatherActivityFragment fragment = new DetailedWeatherActivityFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.weather_detail_container, fragment)
+                    .commit();
+        }
     }
 
 
