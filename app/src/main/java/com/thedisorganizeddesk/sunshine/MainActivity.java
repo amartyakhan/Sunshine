@@ -25,7 +25,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLocation=Utility.getPreferredLocation(this);
+        mLocation=Utility.getSettingLocation(this);
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -92,7 +92,13 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     public void onResume(){
         super.onResume();
         //Log.v(LOG_TAG,"Activity Resumed");
-        String location = Utility.getPreferredLocation( this );
+        String location = Utility.getSettingLocation(this);
+
+        //TODO handle the first run settings
+        if(location ==null){
+            Utility.setDefaultLocation(this);
+            location=Utility.getSettingLocation(this);
+        }
         // update the location in our second pane using the fragment manager
         if (location != null && !location.equals(mLocation)) {
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);

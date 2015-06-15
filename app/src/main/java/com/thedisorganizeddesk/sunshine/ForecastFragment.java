@@ -124,6 +124,7 @@ public class ForecastFragment extends Fragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(URL_LOADER, null, this);
+
         super.onActivityCreated(savedInstanceState);
     }
 

@@ -18,6 +18,7 @@ package com.thedisorganizeddesk.sunshine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
@@ -26,6 +27,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utility {
+    public static String getSettingLocation(Context context){
+        String location;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        location=prefs.getString(context.getString(R.string.pref_location_key),null);
+        return location;
+    }
+
+    public static void setDefaultLocation(Context context){
+        String location;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(context.getString(R.string.pref_location_key), context.getString(R.string.pref_location_default));
+        editor.commit();
+    }
+
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
