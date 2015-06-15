@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fragment_detailed_weather" type="layout">@layout/fragment_detailed_weather_wide</item>
+</resources>

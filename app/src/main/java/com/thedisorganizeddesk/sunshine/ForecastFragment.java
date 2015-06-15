@@ -30,6 +30,9 @@ public class ForecastFragment extends Fragment implements
     // Will contain the raw JSON response as a string.
     private String forecastJsonStr = null;
     private final int URL_LOADER =0;
+    private int currentPosition;
+    private ListView listView;
+
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
@@ -88,6 +91,11 @@ public class ForecastFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        if(currentPosition!=-1){
+            //listView.setSelection(currentPosition);
+            listView.smoothScrollToPosition(currentPosition);
+        }
+
     }
 
     @Override
@@ -102,6 +110,7 @@ public class ForecastFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
+
         setHasOptionsMenu(true);
     }
 
@@ -131,7 +140,7 @@ public class ForecastFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
 
         // The CursorAdapter will take data from our cursor and populate the ListView
@@ -139,14 +148,24 @@ public class ForecastFragment extends Fragment implements
 
         View rootView;
         rootView = inflater.inflate(R.layout.fragment_main,container,false);
-        ListView listView= (ListView) rootView.findViewById(R.id.listView_forecast);
+        listView = (ListView) rootView.findViewById(R.id.listView_forecast);
         listView.setAdapter(adapter);
+
+        if(savedInstanceState!=null){
+            int position=savedInstanceState.getInt("CurrentPosition",-1);
+            if(position !=-1){
+                currentPosition=position;
+            }
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView adapterView, View view, int position, long l) {
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
+
+                //adding current position
+                currentPosition=position;
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
@@ -158,6 +177,12 @@ public class ForecastFragment extends Fragment implements
         });
 
      return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("CurrentPosition", currentPosition);
     }
 
     /**
@@ -181,5 +206,11 @@ public class ForecastFragment extends Fragment implements
     void onLocationChanged(){
         updateWeather();
         getLoaderManager().restartLoader(URL_LOADER, null, this);
+    }
+
+    public void setTodayLayout(boolean value){
+        if(adapter!=null){
+            adapter.setmSpecialTodayView(value);
+        }
     }
 }
