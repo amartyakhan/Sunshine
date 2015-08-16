@@ -23,7 +23,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
-import com.thedisorganizeddesk.sunshine.service.SunshineService;
+import com.thedisorganizeddesk.sunshine.sync.SunshineSyncAdapter;
 
 
 /**
@@ -205,17 +205,7 @@ public class ForecastFragment extends Fragment implements
     }
 
     private void updateWeather() {
-        String location = Utility.getPreferredLocation(getActivity());
-        AlarmManager alarmMgr;
-        PendingIntent alarmIntent;
-        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
-        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,location);
-        alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        Log.v(LOG_TAG, "Calling alarm intent");
-        alarmMgr.set(AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() +
-                        5000, alarmIntent);
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     void onLocationChanged(){
