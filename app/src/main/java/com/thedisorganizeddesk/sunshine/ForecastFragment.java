@@ -18,6 +18,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
+import com.thedisorganizeddesk.sunshine.service.SunshineService;
 
 
 /**
@@ -198,9 +199,10 @@ public class ForecastFragment extends Fragment implements
     }
 
     private void updateWeather() {
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);
+        Intent intent = new Intent(getActivity(), SunshineService.class);
+        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,location);
+        getActivity().startService(intent);
     }
 
     void onLocationChanged(){
