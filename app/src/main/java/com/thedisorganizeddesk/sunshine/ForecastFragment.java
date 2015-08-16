@@ -1,11 +1,16 @@
 package com.thedisorganizeddesk.sunshine;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +31,7 @@ import com.thedisorganizeddesk.sunshine.service.SunshineService;
  */
 public class ForecastFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+    String LOG_TAG=ForecastFragment.class.getSimpleName();
     public final static String EXTRA_MESSAGE = "com.thedisorganizeddesk.sunshine.MESSAGE";
     private ForecastAdapter adapter;
     // Will contain the raw JSON response as a string.
@@ -200,9 +206,16 @@ public class ForecastFragment extends Fragment implements
 
     private void updateWeather() {
         String location = Utility.getPreferredLocation(getActivity());
-        Intent intent = new Intent(getActivity(), SunshineService.class);
+        AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
         intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,location);
-        getActivity().startService(intent);
+        alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        Log.v(LOG_TAG, "Calling alarm intent");
+        alarmMgr.set(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() +
+                        5000, alarmIntent);
     }
 
     void onLocationChanged(){

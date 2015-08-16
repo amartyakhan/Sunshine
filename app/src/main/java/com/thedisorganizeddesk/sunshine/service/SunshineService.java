@@ -1,6 +1,7 @@
 package com.thedisorganizeddesk.sunshine.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,11 +30,12 @@ import java.util.Vector;
  */
 public class SunshineService extends IntentService {
     String mZipcode;
-    private String LOG_TAG=SunshineService.class.getSimpleName();
+    private final String LOG_TAG=SunshineService.class.getSimpleName();
     public static String LOCATION_QUERY_EXTRA="zipcode";
     private Context mContext;
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.v(LOG_TAG,"Fetching weather data");
         mContext=getApplicationContext();
         //get the zipcode from the intent extra
         mZipcode=intent.getStringExtra(LOCATION_QUERY_EXTRA);
@@ -319,6 +321,16 @@ public class SunshineService extends IntentService {
         locationCursor.close();
         // Wait, that worked?  Yes!
         return locationID;
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent sendIntent = new Intent(context, SunshineService.class);
+            sendIntent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,intent.getStringExtra(SunshineService.LOCATION_QUERY_EXTRA));
+            context.startService(sendIntent);
+        }
     }
 
 }
