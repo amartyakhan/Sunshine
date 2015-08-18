@@ -81,4 +81,6 @@
     <string name="pref_enable_notifications_default" translatable="false">true</string>
     <!-- Strings related to Notification preference -->
     <string name="pref_last_notification">last_notification</string>
+
+    <string name="pref_location_status_key">location_status_key</string>
 </resources>
