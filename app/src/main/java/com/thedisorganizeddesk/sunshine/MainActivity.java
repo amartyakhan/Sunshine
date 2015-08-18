@@ -52,6 +52,12 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         ForecastFragment forecastFragment= ((ForecastFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_forecast));
         forecastFragment.setTodayLayout(!mTwoPane);
         SunshineSyncAdapter.initializeSyncAdapter(this);
+
+        // These two lines are working around an android bug:
+        // https://code.google.com/p/android/issues/detail?id=6641
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean("@string/pref_enable_nofitication_key", prefs.getBoolean("@string/pref_enable_nofitication_key", true)).commit();
+
     }
 
 

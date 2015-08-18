@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.widget.TextView;
 
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
 import com.thedisorganizeddesk.sunshine.sync.SunshineSyncAdapter;
@@ -98,6 +101,21 @@ public class ForecastFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
+        //check for empty cursor
+        if(data.getCount()<=0){
+            //check for the network state
+            ConnectivityManager cm =
+                    (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+            if(!isConnected){
+                //change the empty text view to something more helpful
+                TextView emptyTextView=(TextView) getActivity().findViewById(android.R.id.empty);
+                emptyTextView.setText("Network connection not available");
+            }
+        }
         if(currentPosition!=-1){
             //listView.setSelection(currentPosition);
             listView.smoothScrollToPosition(currentPosition);
@@ -157,6 +175,7 @@ public class ForecastFragment extends Fragment implements
         rootView = inflater.inflate(R.layout.fragment_main,container,false);
         listView = (ListView) rootView.findViewById(R.id.listView_forecast);
         listView.setAdapter(adapter);
+        listView.setEmptyView(rootView.findViewById(android.R.id.empty));
 
         if(savedInstanceState!=null){
             int position=savedInstanceState.getInt("CurrentPosition",-1);
