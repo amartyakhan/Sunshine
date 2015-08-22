@@ -218,22 +218,32 @@ public class ForecastFragment extends Fragment implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if(key.equals(getString(R.string.pref_location_status_key))){
+                Log.v(LOG_TAG, "Location status Shared Preference changed");
                 updateEmptyView();
             }
+            else if(key.equals(getString(R.string.pref_location_key))){
+                Utility.resetLocationStatus(getActivity());
+            }
+
     }
 
     private void updateEmptyView() {
+        //Log.v(LOG_TAG, "In update Empty View");
         if(adapter.getCount()==0){
             TextView tv = (TextView) getView().findViewById(android.R.id.empty);
             if(tv == null) return;
             int message = R.string.empty_forecast_list;
             @SunshineSyncAdapter.LocationStatus int location = Utility.getLocationStatus(getActivity());
+            Log.v(LOG_TAG, "In update Empty View for location status: "+location);
             switch (location) {
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
                     message = R.string.empty_forecast_list_server_down;
                     break;
                 case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
                     message = R.string.empty_forecast_list_server_error;
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                    message= R.string.empty_forecast_list_location_invalid;
                     break;
                 default:
                     if (!Utility.isNetworkAvailable(getActivity()) ) {
@@ -258,9 +268,11 @@ public class ForecastFragment extends Fragment implements
 
     private void updateWeather() {
         SunshineSyncAdapter.syncImmediately(getActivity());
+        //updateEmptyView();
     }
 
     void onLocationChanged(){
+        //Utility.resetLocationStatus(getActivity());
         updateWeather();
         getLoaderManager().restartLoader(URL_LOADER, null, this);
     }

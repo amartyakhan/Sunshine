@@ -23,6 +23,7 @@ import android.net.NetworkInfo;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.Log;
 
 import com.thedisorganizeddesk.sunshine.sync.SunshineSyncAdapter;
 
@@ -31,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utility {
+    public static String LOG_TAG=Utility.class.getSimpleName();
     public static String getSettingLocation(Context context){
         String location;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -286,6 +288,15 @@ public class Utility {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
+    }
+
+    static public void resetLocationStatus(Context context){
+        SharedPreferences settings=PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+        // Commit the edits!
+        editor.apply();
+        Log.v(LOG_TAG,"Reset location status to Unknown location status" );
     }
 
 }
