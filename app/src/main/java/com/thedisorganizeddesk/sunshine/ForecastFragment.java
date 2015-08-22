@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
@@ -24,6 +25,7 @@ import android.widget.ListView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.widget.TextView;
+import android.content.SharedPreferences;
 
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
 import com.thedisorganizeddesk.sunshine.sync.SunshineSyncAdapter;
@@ -33,7 +35,7 @@ import com.thedisorganizeddesk.sunshine.sync.SunshineSyncAdapter;
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor> , SharedPreferences.OnSharedPreferenceChangeListener {
     String LOG_TAG=ForecastFragment.class.getSimpleName();
     public final static String EXTRA_MESSAGE = "com.thedisorganizeddesk.sunshine.MESSAGE";
     private ForecastAdapter adapter;
@@ -103,18 +105,7 @@ public class ForecastFragment extends Fragment implements
         adapter.swapCursor(data);
         //check for empty cursor
         if(data.getCount()<=0){
-            //check for the network state
-            ConnectivityManager cm =
-                    (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
-            if(!isConnected){
-                //change the empty text view to something more helpful
-                TextView emptyTextView=(TextView) getActivity().findViewById(android.R.id.empty);
-                emptyTextView.setText("Network connection not available");
-            }
+            updateEmptyView();
         }
         if(currentPosition!=-1){
             //listView.setSelection(currentPosition);
@@ -135,8 +126,21 @@ public class ForecastFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
-
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
     }
 
     @Override
@@ -191,7 +195,7 @@ public class ForecastFragment extends Fragment implements
                 // if it cannot seek to that position.
 
                 //adding current position
-                currentPosition=position;
+                currentPosition = position;
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
@@ -209,6 +213,35 @@ public class ForecastFragment extends Fragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("CurrentPosition", currentPosition);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if(key.equals(getString(R.string.pref_location_status_key))){
+                updateEmptyView();
+            }
+    }
+
+    private void updateEmptyView() {
+        if(adapter.getCount()==0){
+            TextView tv = (TextView) getView().findViewById(android.R.id.empty);
+            if(tv == null) return;
+            int message = R.string.empty_forecast_list;
+            @SunshineSyncAdapter.LocationStatus int location = Utility.getLocationStatus(getActivity());
+            switch (location) {
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                    message = R.string.empty_forecast_list_server_down;
+                    break;
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                    message = R.string.empty_forecast_list_server_error;
+                    break;
+                default:
+                    if (!Utility.isNetworkAvailable(getActivity()) ) {
+                        message = R.string.empty_forecast_list_no_network;
+                    }
+            }
+            tv.setText(message);
+        }
     }
 
     /**
