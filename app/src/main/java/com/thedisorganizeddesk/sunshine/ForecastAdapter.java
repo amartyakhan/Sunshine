@@ -76,6 +76,7 @@ public class ForecastAdapter extends CursorAdapter {
         int viewType = getItemViewType(cursor.getPosition());
         if(viewType==VIEW_TYPE_TODAY) {
             viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+
         }
         else if(viewType==VIEW_TYPE_FUTURE){
             viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
@@ -87,17 +88,23 @@ public class ForecastAdapter extends CursorAdapter {
         // TODO Read weather forecast from cursor
         String weather_desc=cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         viewHolder.descriptionView.setText(weather_desc);
+        //setting content description for the weather descriptionView
+        viewHolder.descriptionView.setContentDescription(context.getString(R.string.a11y_forecast, weather_desc));
+        //setting content description for the image as well
+        viewHolder.iconView.setContentDescription(weather_desc+" weather icon");
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);
 
         // Read high temperature from cursor
-        double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
-        viewHolder.highTempView.setText(Utility.formatTemperature(context,high, isMetric));
+        String high = Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP),isMetric);
+        viewHolder.highTempView.setText(high);
+        viewHolder.highTempView.setContentDescription(context.getString(R.string.a11y_high_temp, high));
 
-        // TODO Read low temperature from cursor
-        double low=cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context,low,isMetric));
+
+        String low = Utility.formatTemperature(context, cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP),isMetric);
+        viewHolder.lowTempView.setText(low);
+        viewHolder.lowTempView.setContentDescription(context.getString(R.string.a11y_low_temp, low));
     }
 
     /**

@@ -125,9 +125,13 @@ public class DetailedWeatherActivityFragment extends Fragment implements
             viewHolder.dateView.setText(dateString);
             viewHolder.dayView.setText(dayString);
             viewHolder.highTempView.setText(high);
+            viewHolder.highTempView.setContentDescription(getString(R.string.a11y_high_temp, high));
             viewHolder.lowTempView.setText(low);
+            viewHolder.lowTempView.setContentDescription(getString(R.string.a11y_low_temp, low));
             viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_CONDITION_ID)));
+            viewHolder.iconView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
             viewHolder.descriptionView.setText(weatherDescription);
+            viewHolder.descriptionView.setContentDescription(getString(R.string.a11y_forecast, weatherDescription));
             viewHolder.humidityView.setText(getString(R.string.format_humidity, humidity));
             viewHolder.pressureView.setText(getString(R.string.format_pressure, pressure));
             viewHolder.windView.setText(wind);
