@@ -181,7 +181,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + "#SunshineAPP");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mForecast + R.string.share_hashtag);
         return shareIntent;
     }
 

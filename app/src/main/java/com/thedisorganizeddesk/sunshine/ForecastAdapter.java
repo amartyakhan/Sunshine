@@ -91,7 +91,7 @@ public class ForecastAdapter extends CursorAdapter {
         //setting content description for the weather descriptionView
         viewHolder.descriptionView.setContentDescription(context.getString(R.string.a11y_forecast, weather_desc));
         //setting content description for the image as well
-        viewHolder.iconView.setContentDescription(weather_desc+" weather icon");
+        viewHolder.iconView.setContentDescription(context.getString(R.string.a11y_forecast_icon,weather_desc));
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);
