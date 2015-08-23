@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
 
 
@@ -115,6 +116,7 @@ public class DetailedWeatherActivityFragment extends Fragment implements
                 data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
         Float humidity = data.getFloat(COL_HUMIDITY);
         Float pressure = data.getFloat(COL_PRESSURE);
+        int weatherId= data.getInt(COL_WEATHER_CONDITION_ID);
         String wind = Utility.getFormattedWind(getActivity(), data.getFloat(COL_WIND_SPEED), data.getFloat(COL_DEGREE));
 
         mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
@@ -128,7 +130,12 @@ public class DetailedWeatherActivityFragment extends Fragment implements
             viewHolder.highTempView.setContentDescription(getString(R.string.a11y_high_temp, high));
             viewHolder.lowTempView.setText(low);
             viewHolder.lowTempView.setContentDescription(getString(R.string.a11y_low_temp, low));
-            viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_CONDITION_ID)));
+            //viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(data.getInt(COL_WEATHER_CONDITION_ID)));
+            Glide.with(this)
+                    .load(Utility.getArtUrlForWeatherCondition(getActivity(),weatherId))
+                    .error(Utility.getArtResourceForWeatherCondition(weatherId))
+                    .crossFade()
+                    .into(viewHolder.iconView);
             viewHolder.iconView.setContentDescription(getString(R.string.a11y_forecast_icon, weatherDescription));
             viewHolder.descriptionView.setText(weatherDescription);
             viewHolder.descriptionView.setContentDescription(getString(R.string.a11y_forecast, weatherDescription));

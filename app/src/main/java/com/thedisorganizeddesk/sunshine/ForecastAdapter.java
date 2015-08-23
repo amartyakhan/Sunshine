@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.util.Util;
 import com.thedisorganizeddesk.sunshine.data.WeatherContract;
 
 /**
@@ -71,16 +73,24 @@ public class ForecastAdapter extends CursorAdapter {
 
         // Read weather icon ID from cursor
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
-
+        int fallbackIconId;
         //Determine which icon or art to show
         int viewType = getItemViewType(cursor.getPosition());
         if(viewType==VIEW_TYPE_TODAY) {
-            viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+            //viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+            fallbackIconId=Utility.getArtResourceForWeatherCondition(weatherId);
+        }
+        //else if(viewType==VIEW_TYPE_FUTURE){
+        else{
+            //viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
+            fallbackIconId=Utility.getIconResourceForWeatherCondition(weatherId);
+        }
 
-        }
-        else if(viewType==VIEW_TYPE_FUTURE){
-            viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
-        }
+        Glide.with(mContext)
+                .load(Utility.getArtUrlForWeatherCondition(mContext,weatherId))
+                .error(fallbackIconId)
+                .crossFade()
+                .into(viewHolder.iconView);
 
         Long date=cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context,date));
