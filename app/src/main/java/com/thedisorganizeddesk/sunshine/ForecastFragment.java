@@ -13,6 +13,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -206,7 +208,7 @@ public class ForecastFragment extends Fragment implements
             }
         });
 
-     return rootView;
+        return rootView;
     }
 
     @Override

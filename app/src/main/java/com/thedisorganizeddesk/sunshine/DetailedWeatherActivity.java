@@ -7,18 +7,25 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.ShareActionProvider;
 
 
-public class DetailedWeatherActivity extends ActionBarActivity {
+public class DetailedWeatherActivity extends AppCompatActivity {
     public final static String EXTRA_MESSAGE = "com.thedisorganizeddesk.sunshine.MESSAGE";
     ShareActionProvider mShareActionProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_weather);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             arguments.putParcelable(DetailedWeatherActivityFragment.DETAIL_URI, getIntent().getData());
